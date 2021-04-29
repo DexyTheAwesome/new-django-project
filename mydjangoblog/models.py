@@ -16,18 +16,16 @@ class Post(models.Model):
     
     
 class Comment(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
-    comment = models.TextField()
-    author = models.ForeignKey(
-        'auth.User',
-        on_delete=models.CASCADE
-    )
+    post = models.ForeignKey(Post,on_delete=models.CASCADE,related_name='comments')
+    name = models.CharField(max_length=50, default='', editable=True)
+    comment = models.TextField(blank=True)
     created_on = models.DateTimeField(auto_now_add=True)
-    active = models.BooleanField(default=False)
+    active = models.BooleanField(default=True)
+
     
     
-    def get_absolute_url(self):
-        return reverse('post_detail')
+    # def get_absolute_url(self):
+    #     return reverse('post_detail')
     
 
     class Meta:
@@ -36,7 +34,7 @@ class Comment(models.Model):
     
 
         def __str__(self):
-            return 'Comment {} by {}'.format(self.body, self.name)
+            return 'Comment {} by {}'.format(self.comment, self.name)
     
 
     

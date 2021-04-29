@@ -5,7 +5,10 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from .forms import CommentForm
 from django.shortcuts import render, get_object_or_404
-from .models import Post
+from .models import Post, Comment
+from django.forms import ModelForm, widgets
+
+
 # Create your views here.
 
 class BlogListView(ListView):
@@ -17,38 +20,6 @@ class BlogDetailView(DetailView):
     model = Post
     template_name = 'post_detail.html'
    
-    
-def post_detail(request, slug):
-    
-    template_name = "post_detail.html"
-    post = get_object_or_404(Post, slug=slug)
-    comments = post.comments.filter(active=True).order_by("-created_on")
-    new_comment = None
-    # Comment posted
-    if request.method == "POST":
-        comment_form = CommentForm(data=request.POST)
-        if comment_form.is_valid():
-
-            # Create Comment object but don't save to database yet
-            new_comment = comment_form.save(commit=False)
-            # Assign the current post to the comment
-            new_comment.post = post
-            # Save the comment to the database
-            new_comment.save()
-    else:
-        comment_form = CommentForm()
-
-    return render(
-        request,
-        template_name,
-        {
-            "post": post,
-            "comments": comments,
-            "new_comment": new_comment,
-            "comment_form": comment_form,
-        },
-    )
-    
     
 class BlogCreateView(CreateView):
     model = Post
@@ -66,3 +37,20 @@ class BlogDeleteView(DeleteView):
     model = Post
     template_name = 'post_delete.html'
     success_url = reverse_lazy('home')
+    
+    
+class CommentCreateView(CreateView):
+    model = Comment
+    form_class = CommentForm
+    template_name = 'new_comment.html'
+    widgets = {
+            'post': widgets.HiddenInput
+        }
+
+    def form_valid(self, form ):
+        form.instance.post_id = self.kwargs['pk']
+        return super().form_valid(form)
+
+    success_url = reverse_lazy('home')
+
+

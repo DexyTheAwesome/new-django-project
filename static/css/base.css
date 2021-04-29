@@ -10,7 +10,7 @@ header {
 }
 
 header h1 a{
-    color:red;
+    color:navy;
     text-decoration: none;
 }
 
@@ -35,7 +35,7 @@ header h1 a{
 
 .post-entry h2 a,
 .post-entry h2 a:visited {
-    color: blue;
+    color: navy;
     text-decoration: none;
 }
 
