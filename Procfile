@@ -1,1 +1,1 @@
-web: gunicorn config.wsgi --log-file -
+web: gunicorn zuridjangoproject.wsgi:application  --log-file - --log-level debug
